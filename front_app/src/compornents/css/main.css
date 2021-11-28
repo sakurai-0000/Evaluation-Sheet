@@ -1,0 +1,75 @@
+.main{
+
+}
+
+.container.evaluationsheet{
+  display: flex;
+  justify-content: center;
+  padding: 5%;
+}
+
+.container.rader.switch{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*-- rader --*/
+.container.rader{
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+}
+
+/*-- switch --*/
+.container.switch{
+padding-left: 10px;
+}
+
+/*-- data sheet --*/
+.container.datasheets{
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+
+.container.datasheet{
+  display: flex;
+  flex-direction: column;
+}
+
+.container.datasheet.title{
+  font-size: 20px;
+  font-weight:  bold;
+  text-align: left;
+}
+
+table tr:nth-child(1) :nth-child(1) {
+  text-align: center !important;
+}
+
+table td:nth-child(1) {
+	width: 2% !important;
+  text-align: right !important;
+}
+
+table td:nth-child(2) {
+	width: 50% !important;
+  text-align: left !important;
+}
+
+table td:nth-child(3),
+table td:nth-child(4),
+table td:nth-child(5) {
+	width: 10% !important;
+}
+
+.sumpts, .applicabilityrate{
+  text-align: right;
+}
+
+/*-- bar --*/
+.container.bar.chart{
+  /* display: flex; */
+  padding: 0 5% 0 5%;
+  width: 60%;
+}

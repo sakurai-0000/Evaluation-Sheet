@@ -1,0 +1,83 @@
+version: "3"
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/usr/src/app
+    command: >
+      sh -c "cd front_app && yarn start"
+    ports:
+      - "3000:3000"
+
+  dynamodb-local:
+    container_name: dynamodb-local
+    image: amazon/dynamodb-local:latest
+    user: root
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /data
+    volumes:
+      - dynamodb-local-data:/data
+    ports:
+      - 8000:8000
+    networks:
+      - dynamodb-local-network
+
+  dynamodb-admin:
+    container_name: dynamodb-admin
+    image: aaronshaf/dynamodb-admin:latest
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb-local:8000/
+    ports:
+      - 8001:8001
+    depends_on:
+      - dynamodb-local
+    networks:
+      - dynamodb-local-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: "minio"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio123
+    entrypoint: sh
+    command: -c "
+      mkdir -p /data/.minio.sys/buckets;
+      cp -r /policies/* /data/.minio.sys/;
+      cp -r /export/* /data/;
+      /usr/bin/minio server --console-address :9001 /data"
+    volumes:
+      - ./docker/minio/data:/data
+      - ./docker/minio/export:/export
+      - ./docker/minio/config:/root/.minio
+      - ./docker/minio/policies:/policies
+
+  # aws-cli:
+  #   image: amazon/aws-cli:latest
+  #   entrypoint: [""]
+  #   tty: true
+  #   environment:
+  #     AWS_ACCESS_KEY_ID: fake_access_key
+  #     AWS_SECRET_ACCESS_KEY: fake_secret_access_key
+  #     DYNAMODB_REGION: ap-northeast-1
+  #     DYNAMODB_TABLE: ExampleTable
+  #   volumes:
+  #     - ./script:/aws/script
+  #   command:
+  #     - /bin/sh
+  #     - /bin/sh -c "./script/create_dynamodb.sh"
+
+volumes:
+  dynamodb-local-data:
+
+networks:
+  dynamodb-local-network:
+    driver: bridge

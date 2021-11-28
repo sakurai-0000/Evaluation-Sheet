@@ -1,0 +1,1 @@
+## docker-compose run --rm node sh -c "create-react-app front_app"
